@@ -6,7 +6,7 @@ from auth import create_access_token, verify_password
 from schemas.token import TokenData
 from schemas.user import UserCreate, User
 from services.user import user_service
-
+from deps import get_current_user
 
 user_router = APIRouter()
 
@@ -36,6 +36,11 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@user_router.get("/users/{user_id}", response_model=User)
-def get_user_details(user_id: str):
-    return user_service.get_user_by_id(user_id)
+# @user_router.get("/users/{user_id}", response_model=User)
+# def get_user_details(user_id: str):
+#     return user_service.get_user_by_id(user_id)
+
+
+@user_router.get("/users", response_model=User)
+def get_user_details(current_user = Depends(get_current_user)):
+    return user_service.get_user_by_id(current_user)

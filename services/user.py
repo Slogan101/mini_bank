@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from auth import get_password_hash
 from schemas.user import UserCreate
@@ -23,11 +23,15 @@ class UserService:
         return user_in_db_serializer(user)
 
     @staticmethod
-    def get_user_by_id(user_id: str):
-        user = users_collection.find_one({"_id": ObjectId(user_id)})
+    def get_user_by_id(current_user):
+        user = user_service.get_user_by_email(current_user.email)
         if not user:
-            raise HTTPException(status_code=404, detail="User with ID does not exist.")
-        return user_in_db_serializer(user)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
+        # user = users_collection.find_one({"_id": ObjectId(user_id)})
+        # print(user)
+        # if not user:
+        #     raise HTTPException(status_code=404, detail="User with ID does not exist.")
+        return user
 
 
 user_service = UserService()
