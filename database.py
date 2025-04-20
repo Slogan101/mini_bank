@@ -4,8 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-print("DB URL:", os.environ.get("DB_URL"))
-
 
 client = mongo_client.MongoClient(os.environ.get("DB_URL"))
 
